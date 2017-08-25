@@ -35,6 +35,15 @@ class Validator
   protected $_sharedSecret = null;
 
   /**
+   * exclude-old-transactions 
+   * (Only used for iOS7  auto-renewable or non-renewing subscriptions. If value is true, response includes the latest renewal transaction for any subscriptions.)
+   *
+   * @var bool
+   */
+  protected $_exclude_old_transactions = false;
+
+
+  /**
    * Guzzle http client
    *
    * @var \GuzzleHttp\Client
@@ -48,6 +57,27 @@ class Validator
     }
 
     $this->_endpoint = $endpoint;
+  }
+
+  /**
+   * Set _exclude_old_transactions
+   *
+   * @return $this
+   */
+  public function setExcludeOldTransactions($exclude)
+  {
+      $this->_exclude_old_transactions = $exclude;
+      return $this;
+  }
+
+  /**
+   * Get  _exclude_old_transactions
+   *
+   * @return bool
+   */
+  public function getExcludeOldTransactions()
+  {
+      return $this->_exclude_old_transactions;
   }
 
   /**
@@ -146,6 +176,8 @@ class Validator
 
       $request['password'] = $this->_sharedSecret;
     }
+
+    $request['exclude-old-transactions'] = $this->_exclude_old_transactions;
 
     return json_encode($request);
   }
