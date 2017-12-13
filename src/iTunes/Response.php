@@ -81,6 +81,12 @@ class Response
   protected $_purchases = [];
 
   /**
+   * latest purchases info
+   * @var PurchaseItem[]
+   */
+  protected $_latest_purchases = [];
+
+  /**
    * pending renewal info
    * @var string
    */
@@ -140,6 +146,16 @@ class Response
   public function getReceipt()
   {
     return $this->_receipt;
+  }
+
+  /**
+   * Get latest purchases.
+   * 
+   * @return PurchaseItem[]
+   */
+  public function getLatestPurchases()
+  {
+    return $this->_latest_purchases;
   }
 
   /**
@@ -211,6 +227,7 @@ class Response
       $this->_receipt = $jsonResponse['receipt'];
       $this->_app_item_id = $this->_receipt['app_item_id'];
       $this->_purchases = [];
+      $this->_latest_purchases = [];
 
       foreach ($jsonResponse['receipt']['in_app'] as $purchase_item_data) {
         $this->_purchases[] = new PurchaseItem($purchase_item_data);
@@ -222,6 +239,10 @@ class Response
 
       if (array_key_exists('latest_receipt_info', $jsonResponse)) {
         $this->_latest_receipt_info = $jsonResponse['latest_receipt_info'];
+
+        foreach ($jsonResponse['latest_receipt_info'] as $purchase_item_data) {
+          $this->_latest_purchases[] = new PurchaseItem($purchase_item_data);
+        }
       }
 
       if (array_key_exists('latest_receipt', $jsonResponse)) {
